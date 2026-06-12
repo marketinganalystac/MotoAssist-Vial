@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "motorizado": {
+      "title": "Motorizado",
+      "description": "Información del motorizado o conductor de asistencia",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nombre": { "type": "string" },
+        "telefono": { "type": "string" },
+        "estado": { "type": "string" },
+        "fecha_ingreso": { "type": "string" },
+        "asistencias_realizadas": { "type": "integer" },
+        "total_facturado": { "type": "number" },
+        "promedio_diario": { "type": "number" },
+        "ultima_asistencia": { "type": "string" }
+      },
+      "required": ["id", "nombre", "telefono", "estado"]
+    },
+    "asistencia": {
+      "title": "Asistencia",
+      "description": "Detalle del ticket de asistencia vial y datos de factura",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fecha": { "type": "string" },
+        "hora": { "type": "string" },
+        "numero_factura": { "type": "string" },
+        "cliente": { "type": "string" },
+        "ruc_cliente": { "type": "string" },
+        "telefono": { "type": "string" },
+        "direccion": { "type": "string" },
+        "comentario": { "type": "string" },
+        "ubicacion_servicio": { "type": "string" },
+        "vendedor": { "type": "string" },
+        "forma_pago": { "type": "string" },
+        "subtotal": { "type": "number" },
+        "itbms": { "type": "number" },
+        "total": { "type": "number" },
+        "estado": { "type": "string" },
+        "motorizado_id": { "type": "string" },
+        "imagen_original": { "type": "string" },
+        "imagen_procesada": { "type": "string" },
+        "descripcion_servicio": { "type": "string" },
+        "descripcion_producto": { "type": "string" },
+        "ocr_json": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "fecha", "numero_factura", "cliente", "total", "estado", "motorizado_id"]
+    },
+    "config": {
+      "title": "Configuración",
+      "description": "Claves o configuraciones del sistema, tales como credenciales de Gemini",
+      "type": "object",
+      "properties": {
+        "apiKey": { "type": "string" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["apiKey"]
+    }
+  },
+  "firestore": {
+    "/motorizados/{motorizadoId}": {
+      "schema": "motorizado",
+      "description": "Colección de motorizados registrados"
+    },
+    "/asistencias/{asistenciaId}": {
+      "schema": "asistencia",
+      "description": "Colección de servicios de asistencia vial registrados"
+    },
+    "/config/{configId}": {
+      "schema": "config",
+      "description": "Configuraciones del sistema, tales como llaves de acceso para Inteligencia Artificial"
+    }
+  }
+}

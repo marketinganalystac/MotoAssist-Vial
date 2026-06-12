@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // MotoAssist Firestore rules for motorizados (publicly readable, structure-validated writes)
+    match /motorizados/{motorizadoId} {
+      allow read: if true;
+      allow create, update: if isValidId(motorizadoId) && isValidMotorizado(request.resource.data);
+      allow delete: if isValidId(motorizadoId);
+    }
+
+    // MotoAssist Firestore rules for asistencias (publicly readable, structure-validated writes)
+    match /asistencias/{asistenciaId} {
+      allow read: if true;
+      allow create, update: if isValidId(asistenciaId) && isValidAsistencia(request.resource.data);
+      allow delete: if isValidId(asistenciaId);
+    }
+
+    // System configuration (e.g. Gemini API keys, persistent state)
+    match /config/{configId} {
+      allow read: if isValidId(configId);
+      allow create, update: if isValidId(configId) && isValidConfig(request.resource.data);
+      allow delete: if isValidId(configId);
+    }
+
+    // Reuse helper functions inside match block
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    function isValidConfig(data) {
+      return data.keys().hasAll(['apiKey'])
+        && data.keys().size() <= 4
+        && data.apiKey is string && data.apiKey.size() <= 512
+        && (!data.keys().hasAny(['updated_at']) || (data.updated_at is string && data.updated_at.size() <= 64));
+    }
+
+    function isValidMotorizado(data) {
+      return data.keys().hasAll(['id', 'nombre', 'telefono', 'estado']) 
+        && data.keys().size() <= 20
+        && data.id is string && data.id.size() <= 128
+        && data.nombre is string && data.nombre.size() <= 128
+        && data.telefono is string && data.telefono.size() <= 32
+        && (data.estado == 'Activo' || data.estado == 'Inactivo')
+        && (!data.keys().hasAny(['fecha_ingreso']) || (data.fecha_ingreso is string && data.fecha_ingreso.size() <= 32))
+        && (!data.keys().hasAny(['asistencias_realizadas']) || data.asistencias_realizadas is number)
+        && (!data.keys().hasAny(['total_facturado']) || data.total_facturado is number)
+        && (!data.keys().hasAny(['promedio_diario']) || data.promedio_diario is number)
+        && (!data.keys().hasAny(['ultima_asistencia']) || (data.ultima_asistencia is string && data.ultima_asistencia.size() <= 64));
+    }
+
+    function isValidAsistencia(data) {
+      return data.keys().hasAll(['id', 'fecha', 'numero_factura', 'cliente', 'total', 'estado', 'motorizado_id'])
+        && data.keys().size() <= 24
+        && data.id is string && data.id.size() <= 128
+        && data.fecha is string && data.fecha.size() <= 32
+        && data.numero_factura is string && data.numero_factura.size() <= 64
+        && data.cliente is string && data.cliente.size() <= 128
+        && data.total is number 
+        && (data.estado == 'Completado' || data.estado == 'Pendiente')
+        && data.motorizado_id is string && data.motorizado_id.size() <= 128
+        && (!data.keys().hasAny(['hora']) || (data.hora is string && data.hora.size() <= 16))
+        && (!data.keys().hasAny(['ruc_cliente']) || (data.ruc_cliente is string && data.ruc_cliente.size() <= 64))
+        && (!data.keys().hasAny(['telefono']) || (data.telefono is string && data.telefono.size() <= 32))
+        && (!data.keys().hasAny(['direccion']) || (data.direccion is string && data.direccion.size() <= 512))
+        && (!data.keys().hasAny(['comentario']) || (data.comentario is string && data.comentario.size() <= 2048))
+        && (!data.keys().hasAny(['ubicacion_servicio']) || (data.ubicacion_servicio is string && data.ubicacion_servicio.size() <= 512))
+        && (!data.keys().hasAny(['vendedor']) || (data.vendedor is string && data.vendedor.size() <= 128))
+        && (!data.keys().hasAny(['forma_pago']) || (data.forma_pago is string && data.forma_pago.size() <= 64))
+        && (!data.keys().hasAny(['subtotal']) || data.subtotal is number)
+        && (!data.keys().hasAny(['itbms']) || data.itbms is number)
+        && (!data.keys().hasAny(['created_at']) || (data.created_at is string && data.created_at.size() <= 64))
+        && (!data.keys().hasAny(['imagen_original']) || data.imagen_original is string)
+        && (!data.keys().hasAny(['imagen_processed']) || data.imagen_processed is string)
+        && (!data.keys().hasAny(['imagen_procesada']) || data.imagen_procesada is string)
+        && (!data.keys().hasAny(['descripcion_servicio']) || (data.descripcion_servicio is string && data.descripcion_servicio.size() <= 2048))
+        && (!data.keys().hasAny(['descripcion_producto']) || (data.descripcion_producto is string && data.descripcion_producto.size() <= 2048))
+        && (!data.keys().hasAny(['ocr_json']) || data.ocr_json is map || data.ocr_json is string);
+    }
+  }
+}

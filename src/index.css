@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-brand-dark: #000020;
+  --color-brand-medium: #171a4a;
+  --color-brand-light: #2f2c79;
+  --color-brand-amber: #ff9800;
+  --color-brand-yellow: #ffcc50;
+  
+  --color-navi-50: #f4f8fc;
+  --color-navi-100: #e8f0f9;
+  --color-navi-200: #c9dbf0;
+  --color-navi-300: #9abce4;
+  --color-navi-400: #6595d2;
+  --color-navi-500: #4274be;
+  --color-navi-600: #2f59a3;
+  --color-navi-700: #264785;
+  --color-navi-800: #1b325f;
+  --color-navi-900: #0b1e36;
+  --color-navi-950: #061120;
+}
+
+body {
+  background-color: #000020;
+  color: #f1f5f9;
+}
+
+/* Glassmorphism Classes for App Layouts */
+.glass-panel {
+  background: rgba(23, 26, 74, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(47, 44, 121, 0.55);
+  border-color: rgba(255, 152, 0, 0.35);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), 0 0 16px rgba(255, 152, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 8px rgba(255, 152, 0, 0.4);
+}
+
+.border-glow-amber {
+  box-shadow: 0 0 12px rgba(255, 152, 0, 0.25);
+}
+
+/* Base fade animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); opacity: 0.1; }
+  25% { opacity: 0.9; }
+  75% { opacity: 0.9; }
+  100% { transform: translateY(340px); opacity: 0.1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom horizontal scroll bar hidden */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+}

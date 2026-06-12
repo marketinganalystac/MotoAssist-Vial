@@ -1,0 +1,10 @@
+{
+  "name": "MotoAssist",
+  "description": "Sistema completo de reporte vial, extracción de facturas por IA mediante OCR en español con Google Gemini y control de flota de motorizados en tiempo real.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
